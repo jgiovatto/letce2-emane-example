@@ -55,6 +55,31 @@ start_emane()
 }
 
 
+start_emanetransportd()
+{
+    local node_name=$1
+    local xml=$2
+    local logfile=$3
+    local pidfile=$4
+    local uuidfile=$5
+
+    if [ -f $xml ]; then
+
+        echo "$node_name: starting emanetransportd: $xml"
+
+        emanetransportd "$xml" -r -d -l 3 -f "$logfile" \
+              --pidfile "$pidfile" --uuidfile "$uuidfile"
+
+        retval=$?
+    else
+        echo "$node_name: missing emanetransportd XML: $xml [!!]"
+        retval=1
+    fi
+
+    return $retval
+}
+
+
 wait_for_device()
 {
     local node_name=$1

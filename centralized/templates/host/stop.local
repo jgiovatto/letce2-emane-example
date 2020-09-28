@@ -31,3 +31,5 @@
 # POSSIBILITY OF SUCH DAMAGE.
 
 top_dir=$1
+
+killall -9 emane
