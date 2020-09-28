@@ -1,0 +1,22 @@
+#!/bin/bash -
+
+top_dir=$1
+start_time=$2
+node_name=host
+
+cd "$top_dir/host"
+
+# load common functions
+. ./functions
+
+if [ -f platform.xml ]
+then
+    start_emane \
+        $node_name \
+        platform.xml \
+        $top_dir/persist/$node_name/var/log/emane.log \
+        $top_dir/persist/$node_name/var/run/emane.pid \
+        $top_dir/persist/$node_name/var/run/emane.uuid
+fi
+
+

@@ -1,0 +1,18 @@
+<?xml version="1.0" ?>
+
+<!DOCTYPE platform  SYSTEM 'file:///usr/share/emane/dtd/platform.dtd'>
+<platform>
+  <param name="otamanagerchannelenable" value="off"/>
+
+  <param name="eventservicegroup"       value="224.1.2.8:45703"/>
+  <param name="eventservicedevice"      value="letce0"/>
+
+  <param name="controlportendpoint"     value="0.0.0.0:47000"/>
+
+  <nem id="1" definition="nem.xml" transport="external">
+    <param name="platformendpoint"   value="${experiment_control_address}:8001"/>
+    <param name="transportendpoint"  value="10.99.0.1:8101"/>
+  </nem>
+
+
+</platform>
