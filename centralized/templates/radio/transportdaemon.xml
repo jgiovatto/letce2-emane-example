@@ -9,7 +9,7 @@
     <transport definition="transvirtual.xml">
       <param name="device"  value="emane0"/>
       <param name="mask"    value="255.255.255.0"/>
-      <param name="address" value="10.1.1.${id}"/>
+      <param name="address" value="10.100.0.${id}"/>
     </transport>
   </instance> 
 
