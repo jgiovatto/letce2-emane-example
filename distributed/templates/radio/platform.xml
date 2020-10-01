@@ -13,9 +13,9 @@ from letce2.utils.network import CIDRNotation
 
   <nem definition="nem.xml" id="${nem_id}">
     <transport definition="transvirtual.xml">
-      <param name="device" value="${waveform_interface}"/>
-      <param name="address" value="${CIDRNotation.address(radio_ip_addr)}"/>
-      <param name="mask" value="${CIDRNotation.netmask(radio_ip_addr)}"/>
+      <param name="device"  value="${waveform_interface}"/>
+      <param name="address" value="${CIDRNotation.address(radio_ip_network)}"/>
+      <param name="mask"    value="${CIDRNotation.netmask(radio_ip_network)}"/>
     </transport>
   </nem>
 </platform>

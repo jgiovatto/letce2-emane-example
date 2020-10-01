@@ -55,6 +55,41 @@ start_emane()
 }
 
 
+start_emaneeventservice()
+{
+    local node_name=$1
+    local xml=$2
+    local logfile=$3
+    local pidfile=$4
+    local uuidfile=$5
+    local starttime="$6"
+
+    local startoption=""
+
+    if [ -n "$starttime" ]; then
+        startoption="--starttime $(date --date "$starttime" "+%H:%M:%S")"
+    fi
+
+    if [ -f $xml ]
+    then
+        echo "$node_name: starting emaneeventservice: $xml at $starttime"
+
+        emaneeventservice -d "$xml" -l 4 -f "$logfile" \
+                          --pidfile "$pidfile" --uuidfile "$uuidfile" \
+                          $startoption
+
+        retval=$?
+    else
+
+        echo "$node_name: missing emaneeventservice XML: $xml [!!]"
+
+        retval=1
+    fi
+
+    return $retval
+}
+
+
 start_emanetransportd()
 {
     local node_name=$1

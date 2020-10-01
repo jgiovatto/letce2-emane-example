@@ -1,3 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE phy SYSTEM "file:///usr/share/emane/dtd/phy.dtd">
-<phy library="bypassphylayer"/>
+ <phy>
+    <param name="fixedantennagain"           value="0.0"/>
+    <param name="fixedantennagainenable"     value="on"/>
+    <param name="noisemode"                  value="passthrough"/>
+    <param name="propagationmodel"           value="precomputed"/>
+    <param name="systemnoisefigure"          value="4.0"/>
+    <param name="bandwidth"                  value="1.0M"/>
+    <paramlist name="frequencyofinterest">
+      <item value="${frequency}"/>
+    </paramlist>
+    <param name="txpower"                    value="0.0"/>
+    <param name="frequency"                  value="${frequency}"/>
+    <param name="subid"                      value="${sub_id}"/>
+  </phy>
+

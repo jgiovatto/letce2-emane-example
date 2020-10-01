@@ -31,3 +31,16 @@
 # POSSIBILITY OF SUCH DAMAGE.
 
 top_dir=$1
+node_name="host"
+
+if [ -f "$top_dir/persist/$node_name/var/run/emaneeventservice.pid" ]
+then
+    kill -QUIT $(cat $top_dir/persist/$node_name/var/run/emaneeventservice.pid)
+fi
+
+
+if [ -f "$top_dir/persist/$node_name/var/run/emane.pid" ]
+then
+    kill -QUIT $(cat $top_dir/persist/$node_name/var/run/emane.pid)
+fi
+
