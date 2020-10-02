@@ -174,3 +174,31 @@ load_arp_cache()
 
     arp -i $device -f "$ethers"
 }
+
+start_mgen()
+{
+    local node_name=$1
+    local mgeninput=$2
+    local mgenoutput=$3
+    local pidfile=$4
+    local logfile=$5
+    local start_utc="$6"
+
+    local startoption=""
+
+    if [ -n "$start_utc" ]; then
+        startoption="start $(date --date "$start_utc" "+%H:%M:%S" --utc)GMT"
+        echo "$node_name: starting mgen input $mgeninput output $mgenoutput $startoption"
+    else
+        echo "$node_name: starting mgen input $mgeninput output $mgenoutput now"
+    fi
+
+    nohup mgen             \
+          input $mgeninput   \
+          output $mgenoutput \
+          $startoption       \
+          txlog &> $logfile &
+
+    echo $! > $pidfile
+}
+

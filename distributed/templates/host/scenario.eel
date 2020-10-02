@@ -18,7 +18,3 @@ targets=set(nems)
 <%block>0.0  nem:${a} pathloss nem:${b},80.0</%block>
 %     endfor
 % endfor
-% for a in sorted(list(nems)):
-<%block>0.0  nem:${a} antennaprofile 1,0.0,0.0</%block>
-% endfor
-
