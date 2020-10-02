@@ -1,0 +1,132 @@
+#!/usr/bin/env python
+#
+# Copyright (c) 2019-2020 - Adjacent Link LLC, Bridgewater, New Jersey
+# All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+#
+# * Redistributions of source code must retain the above copyright
+#   notice, this list of conditions and the following disclaimer.
+# * Redistributions in binary form must reproduce the above copyright
+#   notice, this list of conditions and the following disclaimer in
+#   the documentation and/or other materials provided with the
+#   distribution.
+# * Neither the name of Adjacent Link LLC nor the names of its
+#   contributors may be used to endorse or promote products derived
+#   from this software without specific prior written permission.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+# "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+# FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+# COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+# INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+# BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+# LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+# CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+# LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
+# ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+# POSSIBILITY OF SUCH DAMAGE.
+
+from __future__ import absolute_import, division, print_function
+
+from argparse import ArgumentParser
+import sqlite3
+import pandas as pd
+import numpy as np
+import traceback
+import matplotlib.pyplot as plt
+from matplotlib import compare_versions, __version__
+import glob
+import os
+
+argument_parser = ArgumentParser()
+
+argument_parser.add_argument('testdir1',
+                             type=str,
+                             help='test directory 1')
+
+argument_parser.add_argument('testdir2',
+                             type=str,
+                             help='test directory 2')
+
+argument_parser.add_argument('--out-dir',
+                             type=str,
+                             default='.',
+                             help='output directory [default: %(default)s].')
+
+argument_parser.add_argument('--title',
+                             type=str,
+                             default='Latency Comparison',
+                             help='figure title [default: %(default)s].')
+
+ns = argument_parser.parse_args()
+
+args = vars(ns)
+
+mgen1_dbs = glob.glob('{}/mgen.out.db.*'.format(args['testdir1']))
+mgen2_dbs = glob.glob('{}/mgen.out.db.*'.format(args['testdir2']))
+
+mgen1_test= os.path.basename(args['testdir1'])
+mgen2_test= os.path.basename(args['testdir2'])
+
+def load_df(dbs):
+    all_rx_df = pd.DataFrame()
+    
+    for mgen_db_file in dbs:
+        print('processing: {}'.format(mgen_db_file))
+        try:
+            connection = sqlite3.connect(mgen_db_file)
+            cursor = connection.execute("SELECT * FROM meta;")
+            df = pd.read_sql('select * from rx;',connection)
+            if all_rx_df.empty:
+                all_rx_df = df
+            else:
+                if not df.empty:
+                    all_rx_df = pd.concat((all_rx_df,df))
+            connection.close()
+        except:
+            print(traceback.format_exc())
+            print('error: unable to process {}'.format(mgen_db_file))
+            exit(1)
+
+    all_rx_df['latency'] = (all_rx_df.rxtime - all_rx_df.txtime) * 1000
+            
+    return all_rx_df
+
+mgen1_df = load_df(mgen1_dbs)
+mgen2_df = load_df(mgen2_dbs)
+
+def generate(df,ax,title):
+    df.boxplot(column='latency',
+               by=['txnode','flow'],
+               ax=ax)
+
+    ax.set_title(title)
+    ax.set_ylabel('Milliseconds')
+    
+if compare_versions(__version__,'2.0.0'):
+    plt.style.use('ggplot')
+
+fig,(ax1,ax2) = plt.subplots(2,1)
+
+generate(mgen1_df,ax1,mgen1_test)
+generate(mgen2_df,ax2,mgen2_test)
+
+max_ylim = max(ax1.get_ylim()[1],ax2.get_ylim()[1])
+
+ax1.set_ylim((0,max_ylim))
+ax2.set_ylim((0,max_ylim))
+
+fig.subplots_adjust(hspace=.5)        
+
+fig.suptitle('\n{}'.format(args['title']),fontsize=16)
+
+fig.set_size_inches(17,11)
+
+plt.savefig(os.path.join(args['out_dir'],
+                         'latency-comparison-boxplot.png'))
+plt.close()
+
