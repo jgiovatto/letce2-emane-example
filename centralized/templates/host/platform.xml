@@ -2,9 +2,11 @@
 
 <!DOCTYPE platform  SYSTEM 'file:///usr/share/emane/dtd/platform.dtd'>
 <platform>
-  <param name="otamanagerchannelenable" value="off"/>
+  <param name="otamanagerchannelenable" value="on"/>
+  <param name="otamanagerdevice"        value="${control_interface}"/>
+  <param name="otamanagergroup"         value="224.1.2.8:45702"/>
   <param name="eventservicegroup"       value="224.1.2.8:45703"/>
-  <param name="eventservicedevice"      value="letce0"/>
+  <param name="eventservicedevice"      value="${control_interface}"/>
   <param name="controlportendpoint"     value="0.0.0.0:47000"/>
 <%
 import re

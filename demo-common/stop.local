@@ -1,6 +1,6 @@
 #!/bin/bash -
 #
-# Copyright (c) 2016-2017 - Adjacent Link LLC, Bridgewater, New Jersey
+# Copyright (c) 2017 - Adjacent Link LLC, Bridgewater, New Jersey
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -31,71 +31,22 @@
 # POSSIBILITY OF SUCH DAMAGE.
 
 top_dir=$1
-node_name=$2
-start_time=$3
+node_name="host"
 
-echo "top_dir: $top_dir"
-echo "node_name: $node_name"
-echo "start_time: $start_time"
-
-cd "$top_dir/$node_name"
-
-# load common functions
-. ./functions
-
-if [ -f ./node-prestart ]
+if [ -f "$top_dir/persist/$node_name/var/run/emaneeventservice.pid" ]
 then
-    bash ./node-prestart $node_name
-fi
-
-if [ -f platform.xml ]
-then
-    start_emane \
-        $node_name \
-        platform.xml \
-        $top_dir/persist/$node_name/var/log/emane.log \
-        $top_dir/persist/$node_name/var/run/emane.pid \
-        $top_dir/persist/$node_name/var/run/emane.uuid
+    kill -QUIT $(cat $top_dir/persist/$node_name/var/run/emaneeventservice.pid)
 fi
 
 
-if [ -f transportdaemon.xml ]
+if [ -f "$top_dir/persist/$node_name/var/run/emane.pid" ]
 then
-    start_emanetransportd \
-        $node_name \
-        transportdaemon.xml \
-        $top_dir/persist/$node_name/var/log/emanetransportd.log \
-        $top_dir/persist/$node_name/var/run/emanetransportd.pid \
-        $top_dir/persist/$node_name/var/run/emanetransportd.uuid
-fi
-
-% if waveform_interface:
-    wait_for_device $node_name ${waveform_interface} 30
-% else:
-    sleep 4
-%endif
-
-
-if [ -f mgen ]
-then
-    start_mgen \
-        $node_name \
-        mgen \
-        $top_dir/persist/$node_name/var/log/mgen.out \
-        $top_dir/persist/$node_name/var/run/mgen.pid \
-        $top_dir/persist/$node_name/var/log/mgen.log \
-        "$start_time"
+    kill -QUIT $(cat $top_dir/persist/$node_name/var/run/emane.pid)
 fi
 
 
-if [ -f ./node-preapplication ]
+if [ -f "$top_dir/persist/$node_name/var/run/eemane-spectrum-monitor.pid" ]
 then
-
-    bash ./node-preapplication $node_name
+    kill -QUIT $(cat $top_dir/persist/$node_name/var/run/emane-spectrum-monitor.pid)
 fi
 
-
-if [ -f ./node-poststart ]
-then
-    bash ./node-poststart $node_name
-fi

@@ -6,7 +6,7 @@
     <param name="noisemode"                  value="passthrough"/>
     <param name="propagationmodel"           value="precomputed"/>
     <param name="systemnoisefigure"          value="4.0"/>
-    <param name="bandwidth"                  value="1.0M"/>
+    <param name="bandwidth"                  value="${bandwidth}"/>
     <paramlist name="frequencyofinterest">
       <item value="${frequency}"/>
     </paramlist>
