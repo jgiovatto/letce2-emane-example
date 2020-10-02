@@ -1,5 +1,0 @@
-TTL 10
-
-0.0 LISTEN UDP 5001
-
-1.0 ON 1 UDP SRC 5001 DST ${tx_dst}/5001 POISSON [${tx_rate} ${tx_size}] INTERFACE ${lan_interface}

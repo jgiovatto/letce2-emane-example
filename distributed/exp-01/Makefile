@@ -9,3 +9,4 @@ all:
 
 clean:
 	letce2 lxc clean
+	rm -fr test-data*
