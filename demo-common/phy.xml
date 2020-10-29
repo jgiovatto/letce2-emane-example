@@ -3,7 +3,7 @@
  <phy>
     <param name="fixedantennagain"           value="0.0"/>
     <param name="fixedantennagainenable"     value="on"/>
-    <param name="noisemode"                  value="passthrough"/>
+    <param name="noisemode"                  value="all"/>
     <param name="propagationmodel"           value="precomputed"/>
     <param name="systemnoisefigure"          value="4.0"/>
     <param name="bandwidth"                  value="${bandwidth}"/>

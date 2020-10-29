@@ -12,5 +12,7 @@ emane-spectrum-analyzer \
     $1:8883 \
     --hz-min 2390000000 \
     --hz-max 2410000000 \
-    --subid-name 1,radio-1
+    --with-waveforms \
+    --subid-name 1,radio-1 \
+    --subid-name 2,radio-2
 
