@@ -4,7 +4,7 @@ data_dir=test-data-$(date "+%Y%m%d.%H%M%S" --utc)
 
 ENVIRONMENT=''
 
-env_file=~/Devel/environments/emane.env
+env_file=../../demo-common/demo.env
 
  # adjacent link internal test environment, disregard
 if [ -f  $env_file ]

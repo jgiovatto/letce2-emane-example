@@ -1,6 +1,8 @@
 # letce2-emane-example
 
-requires letce2 and mgen-analytics
+requires letce2 and mgen-analytics to be installed or sourced in via env
+
+letce2 lxc start -e ../demo.env
 
 https://github.com/adjacentlink/letce2
 
