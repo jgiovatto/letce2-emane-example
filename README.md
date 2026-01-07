@@ -2,7 +2,7 @@
 
 requires letce2 and mgen-analytics to be installed or sourced in via env
 
-letce2 lxc start -e ../../demo-common/demo.env
+letce2 lxc start -e ../demo-common/demo.env
 
 https://github.com/adjacentlink/letce2
 

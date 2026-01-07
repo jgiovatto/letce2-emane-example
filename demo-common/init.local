@@ -70,7 +70,7 @@ then
 fi
 
 % if waveform_interface:
-    wait_for_device $node_name ${waveform_interface} 30
+    wait_for_device_ip_link $node_name ${waveform_interface} 30
 % else:
     sleep 4
 %endif

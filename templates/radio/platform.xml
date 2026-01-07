@@ -1,5 +1,4 @@
 <?xml version="1.0" ?>
-
 <!DOCTYPE platform  SYSTEM 'file:///usr/share/emane/dtd/platform.dtd'>
 <platform>
   <param name="otamanagerchannelenable" value="on"/>
@@ -8,20 +7,12 @@
   <param name="eventservicegroup"       value="224.1.2.8:45703"/>
   <param name="eventservicedevice"      value="${control_interface}"/>
   <param name="controlportendpoint"     value="0.0.0.0:47000"/>
-<%
-import re
-nems=set()
-for node,items in __share.items():
-    for item in items:
-        if item == 'nem_id':
-            nems.add(items[item])
-%>
-% for a in sorted(list(nems)):
-<%block>
-  <nem id="${a}" definition="nem.xml" transport="external">
-    <param name="platformendpoint"   value="${experiment_control_address}:810${a}"/>
-    <param name="transportendpoint"  value="10.99.0.${a}:8200"/>
+
+  <nem definition="nem.xml" id="${nem_id}" transport="external">
+    <param name="platformendpoint"   value="127.0.0.1:8001"/>
+    <param name="transportendpoint"  value="127.0.0.1:8002"/>
+    <transport definition="${transport_xml_file}">
+      <param name="device"  value="${waveform_interface}"/>
+    </transport>
   </nem>
-</%block>
-% endfor
 </platform>
