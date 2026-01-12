@@ -112,3 +112,33 @@ if [ -f ./node-poststart ]
 then
     bash ./node-poststart $node_name
 fi
+
+
+if [ -f zebra.conf ]
+then
+    start_frr_router_app \
+        $node_name \
+        zebra \
+        zebra.conf \
+        root
+fi
+
+
+if [ -f ripd.conf ]
+then
+    start_frr_router_app \
+        $node_name \
+        ripd \
+        ripd.conf \
+        root
+fi
+
+if [ -f ospfd.conf ]
+then
+    start_frr_router_app \
+        $node_name \
+        ospfd \
+        ospfd.conf \
+        root
+fi
+

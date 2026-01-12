@@ -202,3 +202,35 @@ start_mgen()
     echo $! > $pidfile
 }
 
+
+start_frr_router_app()
+{
+    local node_name=$1
+    local name=$2
+    local conf=$3
+    local userId=$4
+
+    # need full path for sock and pidfile, Unix sock max path len is 108 bytes
+    local sock_path=/tmp/persist/$node_name/var/run
+    mkdir -p $sock_path
+
+    local sock=$sock_path/zebra.sock
+    local pidfile=$top_dir/persist/$node_name/var/run/$name.pid
+
+    # quagga user/group headache set to owner using -u -g
+    conf_uid=$(stat  -c "%U" $conf)
+    conf_gid=$(stat  -c "%G" $conf)
+
+    mkdir -p $sock_path
+    chown -R $conf_uid:$conf_gid /tmp/persist
+
+    # conf already verified by caller
+    echo "$node_name: $name -f $conf -u $conf_uid -g $conf_gid -z $sock -i $pidfile"
+    
+    /usr/libexec/frr/$name -d -f $conf -u $conf_uid -g $conf_gid -z $sock -i $pidfile -N $node_name
+
+    retval=$?
+
+    return $retval
+}
+
