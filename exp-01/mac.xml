@@ -2,7 +2,7 @@
 <!DOCTYPE mac SYSTEM "file:///usr/share/emane/dtd/mac.dtd">
 <mac name="RF-PIPE MAC" library="rfpipemaclayer">
   <param name="pcrcurveuri"                   value="pcr.xml"/>
-  <param name="datarate"                      value="1M"/>
+  <param name="datarate"                      value="${datarate}"/>
   <param name="delay"                         value="${delay}"/>
   <param name="jitter"                        value="${jitter}"/>
   <param name="enablepromiscuousmode"         value="off"/>
