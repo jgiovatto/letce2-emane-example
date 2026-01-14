@@ -6,7 +6,7 @@
 
 3) to run, letce2 lxc start -e ../demo.env --scenario-delay=30
 
-https://github.com/adjacentlink/letce2
+see https://github.com/adjacentlink/letce2
 
 4) view containers
 # sudo lxc-ls -f
@@ -45,3 +45,50 @@ Destination     Gateway         Genmask         Flags Metric Ref    Use   Iface
 10.101.2.0	    10.100.4.2	    255.255.255.0   UG    20     0        0   wan4
 10.101.3.0	    10.100.4.3	    255.255.255.0   UG    20     0        0   wan4
 10.101.4.0	    10.100.4.4	    255.255.255.0   UG    20     0        0   wan4
+
+6) vtysh --vty_socket /var/run/frr/router-1
+router-1# sh ip ospf
+ OSPF Routing Process, Router ID: 10.101.1.1
+ Supports only single TOS (TOS0) routes
+ This implementation conforms to RFC2328
+ RFC1583Compatibility flag is disabled
+ OpaqueCapability flag is disabled
+ Initial SPF scheduling delay 0 millisec(s)
+ Minimum hold time between consecutive SPFs 50 millisec(s)
+ Maximum hold time between consecutive SPFs 5000 millisec(s)
+ Hold time multiplier is currently 1
+ SPF algorithm last executed 6m58s ago
+ Last SPF duration 0.001s
+ SPF timer is inactive
+ LSA minimum interval 5000 msecs
+ LSA minimum arrival 1000 msecs
+ Write Multiplier set to 20 
+ Refresh timer 10 secs
+ Maximum multiple paths(ECMP) supported 8
+ Administrative distance 110
+ Number of external LSA 0. Checksum Sum 0x00000000
+ Number of opaque AS LSA 0. Checksum Sum 0x00000000
+ Number of areas attached to this router: 1
+ Area ID: 0.0.0.0 (Backbone)
+   Number of interfaces in this area: Total: 5, Active: 5
+   Number of fully adjacent neighbors in this area: 8
+   Area has no authentication
+   SPF algorithm executed 27 times
+   Number of LSA 8
+   Number of router LSA 4. Checksum Sum 0x000235e6
+   Number of network LSA 4. Checksum Sum 0x00023733
+   Number of summary LSA 0. Checksum Sum 0x00000000
+   Number of ASBR summary LSA 0. Checksum Sum 0x00000000
+   Number of NSSA LSA 0. Checksum Sum 0x00000000
+   Number of opaque link LSA 0. Checksum Sum 0x00000000
+   Number of opaque area LSA 0. Checksum Sum 0x00000000
+
+7) To setup usb to ethernet adapters
+create or edit /etc/udev/rules.d/70-persistent-net.rules/70-persistent-net.rules
+
+SUBSYSTEM=="net", ACTION=="add", ATTR{address}=="00:50:b6:08:72:34", KERNEL=="eth*", NAME="adapt0"
+SUBSYSTEM=="net", ACTION=="add", ATTR{address}=="00:50:b6:04:04:98", KERNEL=="eth*", NAME="adapt1"
+SUBSYSTEM=="net", ACTION=="add", ATTR{address}=="00:50:b6:05:7c:85", KERNEL=="eth*", NAME="adapt2"
+SUBSYSTEM=="net", ACTION=="add", ATTR{address}=="00:50:b6:09:f5:94", KERNEL=="eth*", NAME="adapt3"
+
+

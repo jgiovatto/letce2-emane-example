@@ -227,7 +227,7 @@ start_frr_router_app()
     # conf already verified by caller
     echo "$node_name: $name -f $conf -u $conf_uid -g $conf_gid -z $sock -i $pidfile"
     
-    /usr/libexec/frr/$name -d -f $conf -u $conf_uid -g $conf_gid -z $sock -i $pidfile
+    /usr/libexec/frr/$name -d -f $conf -u $conf_uid -g $conf_gid -z $sock -i $pidfile -N $node_name
 
     retval=$?
 
