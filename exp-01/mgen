@@ -1,3 +1,4 @@
+% if have_mgen_tools == '1':
 <%
 from mgen_analytics.utils.flowcoder import FlowCoder
 
@@ -55,4 +56,15 @@ TTL 32
 121.0 OFF ${node_4_flow_1_id}
 131.0 IGNORE UDP ${node_3_flow_1_port}
 131.0 IGNORE UDP ${node_2_flow_2_port}
+% endif
+
+% else :
+% if id == '1':
+0.0 LISTEN UDP 11000
+% else :
+1.0 ON 100 UDP SRC 11000 DST 10.101.1.1/11000 PERIODIC [1 128]
+121.0 OFF 100
+% endif
+
+131.0 IGNORE UDP 11000
 % endif

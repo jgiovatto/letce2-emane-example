@@ -1,6 +1,6 @@
 # letce2-emane-example
 
-1) requires letce2 and mgen-analytics to be installed or sourced in via env
+1) requires letce2 and optional mgen-analytics to be installed or sourced in via env
 
 2) you will need to add root and yourself to the appropriate group see scripts/set_frr_groups.sh 
 
@@ -35,13 +35,13 @@ router-4 RUNNING 0         -      10.100.1.4, 10.100.2.4, 10.100.3.4, 10.100.4.4
 5) view container routing table
 # ssh node-1 route -n
 Kernel IP routing table
-Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
-10.99.0.0	0.0.0.0         255.255.255.0   U     0      0        0 backchan0
-10.100.1.0	0.0.0.0         255.255.255.0   U     0      0        0 wan1
-10.100.2.0	0.0.0.0         255.255.255.0   U     0      0        0 wan2
-10.100.3.0	0.0.0.0         255.255.255.0   U     0      0        0 wan3
-10.100.4.0	0.0.0.0         255.255.255.0   U     0      0        0 wan4
-10.101.1.0	0.0.0.0         255.255.255.0   U     0      0        0 lan0
-10.101.2.0	10.100.4.2	    255.255.255.0   UG    20     0        0 wan4
-10.101.3.0	10.100.4.3	    255.255.255.0   UG    20     0        0 wan4
-
+Destination     Gateway         Genmask         Flags Metric Ref    Use   Iface
+10.99.0.0	    0.0.0.0         255.255.255.0   U     0      0        0   backchan0
+10.100.1.0	    0.0.0.0         255.255.255.0   U     0      0        0   wan1
+10.100.2.0	    0.0.0.0         255.255.255.0   U     0      0        0   wan2
+10.100.3.0	    0.0.0.0         255.255.255.0   U     0      0        0   wan3
+10.100.4.0	    0.0.0.0         255.255.255.0   U     0      0        0   wan4
+10.101.1.0	    0.0.0.0         255.255.255.0   U     0      0        0   lan0
+10.101.2.0	    10.100.4.2	    255.255.255.0   UG    20     0        0   wan4
+10.101.3.0	    10.100.4.3	    255.255.255.0   UG    20     0        0   wan4
+10.101.4.0	    10.100.4.4	    255.255.255.0   UG    20     0        0   wan4
