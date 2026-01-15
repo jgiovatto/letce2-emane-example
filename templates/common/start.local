@@ -44,3 +44,7 @@ then
 fi
 
 
+if [ -f external_interfaces.txt ]
+then
+   link_external_interfaces "external_interfaces.txt"
+fi

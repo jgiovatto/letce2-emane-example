@@ -234,3 +234,15 @@ start_frr_router_app()
     return $retval
 }
 
+link_external_interfaces()
+{
+  local config=$1
+
+  echo "external interfaces  $config"
+
+  while IFS=":" read -r br_name if_name; do
+    # Process the line here
+    echo "add external interface: $if_name to bridge $br_name"
+    brctl addif $br_name $if_name
+  done < "$config"
+}
