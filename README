@@ -37,8 +37,9 @@ external-host platform 1                                                     dem
                            |-----------------------------------------------------------------------------------------------------------------|
                            |                    |     (lxc router1)       |    (lxc emane )  |       (lxc router2)        |                  | 
                            |                    |                         |                  |                            |                  |
-                           |       usb-eth      |                wlan0  --|--  radio net 0 --|--  wlan0                   |    usb-eth       |
-                           |        adapt1      |     lan0       wlan1  --|--  radio net 1 --|--  wlan1      lan0         |     adapt2       |  
+                           |                    |          aveth          |                  |           aveth            |                  |
+                           |         eth        |                wlan0  --|--  radio net 0 --|--  wlan0                   |       eth        |
+                           |        adapt0      |     lan0       wlan1  --|--  radio net 1 --|--  wlan1      lan0         |     adapt1       |  
          ip  10.101.1.2  -----  192.168.101.1 --|-- 10.101.1.1   wlan2  --|--  radio net 2 --|--  wlan2      10.101.2.1 --|-- 192.168.102.1 ----- 10.101.2.2 ip
          gw  10.101.1.1    |                ^        ^           wlan3  --|--  radio net 3 --|--  wlan3               ^        ^             |    10.101.2.1 gw  
                            |                | bridge |                    |                  |                        | bridge |             |
@@ -81,6 +82,71 @@ Destination     Gateway         Genmask         Flags Metric Ref    Use   Iface
 10.101.3.0	    10.100.4.3	    255.255.255.0   UG    20     0        0   wan4
 10.101.4.0	    10.100.4.4	    255.255.255.0   UG    20     0        0   wan4
 
+3) brctl show
+bridge name	bridge id		STP enabled	interfaces
+# platform 1
+br_pl_1_lan_1		8000.0050b6087234	no	adapt0
+							aveth.17.5
+
+br_pl_1_wf_1		8000.fe17982e0a0f	no	aveth.1.1
+							aveth.17.1
+
+br_pl_1_wf_2		8000.fe3f06ef5cd5	no	aveth.17.2
+							aveth.5.1
+
+br_pl_1_wf_3		8000.fe88506c471b	no	aveth.17.3
+							aveth.9.1
+
+br_pl_1_wf_4		8000.febd86b42723	no	aveth.13.1
+							aveth.17.4
+
+# paltform 2
+br_pl_2_lan_1		8000.0050b6040498	no	adapt1
+							aveth.18.5
+
+br_pl_2_wf_1		8000.fe793d6751d4	no	aveth.18.1
+							aveth.2.1
+
+br_pl_2_wf_2		8000.fee60a627df0	no	aveth.18.2
+							aveth.6.1
+
+br_pl_2_wf_3		8000.fe0fb623599d	no	aveth.10.1
+							aveth.18.3
+
+br_pl_2_wf_4		8000.fe5a6402b40c	no	aveth.14.1
+							aveth.18.4
+
+# platform 3
+br_pl_3_lan_1		8000.0050b6057c85	no	adapt2
+							aveth.19.5
+
+br_pl_3_wf_1		8000.fe8581982e7d	no	aveth.19.1
+							aveth.3.1
+
+br_pl_3_wf_2		8000.fe46703022a0	no	aveth.19.2
+							aveth.7.1
+
+br_pl_3_wf_3		8000.fe74f1b49303	no	aveth.11.1
+							aveth.19.3
+
+br_pl_3_wf_4		8000.fe2c8bdec6a7	no	aveth.15.1
+							aveth.19.4
+
+br_pl_4_lan_1		8000.0050b609f594	no	adapt3
+							aveth.20.5
+
+br_pl_4_wf_1		8000.fe563bf0ed65	no	aveth.20.1
+							aveth.4.1
+
+br_pl_4_wf_2		8000.fe2918873ab0	no	aveth.20.2
+							aveth.8.1
+
+br_pl_4_wf_3		8000.fe0d258cb99d	no	aveth.12.1
+							aveth.20.3
+
+br_pl_4_wf_4		8000.fe14540dc9ee	no	aveth.16.1
+                                                        aveth.20.4
+
 3) vtysh --vty_socket /var/run/frr/router-1
 router-1# sh ip ospf
  OSPF Routing Process, Router ID: 10.101.1.1
@@ -121,10 +187,24 @@ router-1# sh ip ospf
 
 ---------------- experiment-02 --------------
 This experiment relies on bridging to connect external hosts as if they were on the same subnet.
-Each external node connects to a real usb ethernet interface which is bridged to an LXC container that runs emane.
-Emane will read the ethernet frame from the inteface and send it OTA to the other Emane nodes which will forward the frame out to the external host.
+Each external node connects to a real ethernet interface which is bridged to an LXC container that runs EMANE.
+Each EMANE will read the ethernet frame from the aveth inteface and send it OTA to the other EMANE node(s) which will forward the frame out to the external host.
+There are (4) external interfaces per platform. Each interface is bridge to an LXC container running an EMANE network.
+
+external-host platform 1                                     demo-platform                      external host platform 2
+                      |---------------------------------------------------------------------------|
+                      |                 |               (lxc emane )               |              |
+                      |        eth      |    aveth                        aveth    |     eth      |
+    ip 10.101.1.1 ----|-----  adapt0    |    lan0  ----  radio net 0 ----  lan0    |   adapt5 ----|----- 10.101.1.2 ip
+    ip 10.101.2.1 ----|-----  adapt1    |    lan0  ----  radio net 1 ----  lan0    |   adapt6 ----|----- 10.101.2.2 ip 
+    ip 10.101.3.1 ----|-----  adapt2    |    lan0  ----  radio net 2 ----  lan0    |   adapt7 ----|----- 10.101.3.2 ip 
+    ip 10.101.4.1 ----|-----  adapt3    |    lan0  ----  radio net 3 ----  lan0    |   adapt8 ----|----- 10.101.4.2 ip 
+                      |            | bridge |                                 | bridge |          | 
+                      |___________________________________________________________________________|
 
 1) brctl show
+
+# paltform 1
 br_pl_1_wf_1		8000.0050b6087234	no	adapt0
                 					aveth.1.1
 
@@ -137,6 +217,8 @@ br_pl_1_wf_3		8000.0050b6057c85	no	adapt2
 br_pl_1_wf_4		8000.0050b609f594	no	adapt3
 				                	aveth.4.1
 
+
+# platform 2
 br_pl_2_wf_1		8000.9c69d339fe0f	no	adapt5
 						       	aveth.5.1
 
