@@ -8,8 +8,41 @@
 
 see https://github.com/adjacentlink/letce2
 
+To setup usb to ethernet adapters (adjust ether mac address to match your adapters)
+create or edit /etc/udev/rules.d/70-persistent-net.rules/70-persistent-net.rules
 
-experiment-01
+SUBSYSTEM=="net", ACTION=="add", ATTR{address}=="00:50:b6:08:72:34", KERNEL=="eth*", NAME="adapt0"
+SUBSYSTEM=="net", ACTION=="add", ATTR{address}=="00:50:b6:04:04:98", KERNEL=="eth*", NAME="adapt1"
+SUBSYSTEM=="net", ACTION=="add", ATTR{address}=="00:50:b6:05:7c:85", KERNEL=="eth*", NAME="adapt2"
+SUBSYSTEM=="net", ACTION=="add", ATTR{address}=="00:50:b6:09:f5:94", KERNEL=="eth*", NAME="adapt3"
+SUBSYSTEM=="net", ACTION=="add", ATTR{address}=="00:14:d1:1b:73:bf", KERNEL=="eth*", NAME="adapt4"
+SUBSYSTEM=="net", ACTION=="add", ATTR{address}=="9c:69:d3:39:fe:0f", KERNEL=="eth*", NAME="adapt5"
+SUBSYSTEM=="net", ACTION=="add", ATTR{address}=="9c:69:d3:39:fe:0c", KERNEL=="eth*", NAME="adapt6"
+SUBSYSTEM=="net", ACTION=="add", ATTR{address}=="9c:69:d3:39:fe:73", KERNEL=="eth*", NAME="adapt7"
+SUBSYSTEM=="net", ACTION=="add", ATTR{address}=="9c:69:d3:39:fd:a1", KERNEL=="eth*", NAME="adapt8"
+SUBSYSTEM=="net", ACTION=="add", ATTR{address}=="00:e0:4c:68:08:f3", KERNEL=="eth*", NAME="adapt9"
+
+
+
+
+---------------- experiment-01 --------------
+This experiment relies on IP forwarding to move traffic from end to end.
+The demo has 1 router running in an LXC container attached to 4 radios each running in its own LXC container in a different RF network.
+Let PLID be the platform ID (1 router and 4 radios).
+Let RFID be the radio network id (1-4)
+The router has 1 lan interface 10.101.PLID.1 and 4 wlan interfaces that map to a radio 10.100.RFID.PLID
+
+
+external-host platform 1                                                     demo-platform                                                      external host platform 2
+                           |-----------------------------------------------------------------------------------------------------------------|
+                           |                    |     (lxc router1)       |    (lxc emane )  |       (lxc router2)        |                  | 
+                           |                    |                         |                  |                            |                  |
+                           |       usb-eth      |                wlan0  --|--  radio net 0 --|--  wlan0                   |    usb-eth       |
+                           |        adapt1      |     lan0       wlan1  --|--  radio net 1 --|--  wlan1      lan0         |     adapt2       |  
+         ip  10.101.1.2  -----  192.168.101.1 --|-- 10.101.1.1   wlan2  --|--  radio net 2 --|--  wlan2      10.101.2.1 --|-- 192.168.102.1 ----- 10.101.2.2 ip
+         gw  10.101.1.1    |                ^        ^           wlan3  --|--  radio net 3 --|--  wlan3               ^        ^             |    10.101.2.1 gw  
+                           |                | bridge |                    |                  |                        | bridge |             |
+                           |______________________________________________|__________________|_______________________________________________|
 1) view containers
 # sudo lxc-ls -f
 NAME     STATE   AUTOSTART GROUPS IPV4                                                                   IPV6 UNPRIVILEGED 
@@ -86,46 +119,35 @@ router-1# sh ip ospf
    Number of opaque area LSA 0. Checksum Sum 0x00000000
 
 
+---------------- experiment-02 --------------
+This experiment relies on bridging to connect external hosts as if they were on the same subnet.
+Each external node connects to a real usb ethernet interface which is bridged to an LXC container that runs emane.
+Emane will read the ethernet frame from the inteface and send it OTA to the other Emane nodes which will forward the frame out to the external host.
 
-experiment-2
-1) To setup usb to ethernet adapters (adjust ether mac address to match your adapters)
-create or edit /etc/udev/rules.d/70-persistent-net.rules/70-persistent-net.rules
-
-SUBSYSTEM=="net", ACTION=="add", ATTR{address}=="00:50:b6:08:72:34", KERNEL=="eth*", NAME="adapt0"
-SUBSYSTEM=="net", ACTION=="add", ATTR{address}=="00:50:b6:04:04:98", KERNEL=="eth*", NAME="adapt1"
-SUBSYSTEM=="net", ACTION=="add", ATTR{address}=="00:50:b6:05:7c:85", KERNEL=="eth*", NAME="adapt2"
-SUBSYSTEM=="net", ACTION=="add", ATTR{address}=="00:50:b6:09:f5:94", KERNEL=="eth*", NAME="adapt3"
-SUBSYSTEM=="net", ACTION=="add", ATTR{address}=="00:14:d1:1b:73:bf", KERNEL=="eth*", NAME="adapt4"
-SUBSYSTEM=="net", ACTION=="add", ATTR{address}=="9c:69:d3:39:fe:0f", KERNEL=="eth*", NAME="adapt5"
-SUBSYSTEM=="net", ACTION=="add", ATTR{address}=="9c:69:d3:39:fe:0c", KERNEL=="eth*", NAME="adapt6"
-SUBSYSTEM=="net", ACTION=="add", ATTR{address}=="9c:69:d3:39:fe:73", KERNEL=="eth*", NAME="adapt7"
-SUBSYSTEM=="net", ACTION=="add", ATTR{address}=="9c:69:d3:39:fd:a1", KERNEL=="eth*", NAME="adapt8"
-SUBSYSTEM=="net", ACTION=="add", ATTR{address}=="00:e0:4c:68:08:f3", KERNEL=="eth*", NAME="adapt9"
-
-2) brctl show
+1) brctl show
 br_pl_1_wf_1		8000.0050b6087234	no	adapt0
-                							aveth.1.1
+                					aveth.1.1
 
 br_pl_1_wf_2		8000.0050b6040498	no	adapt1
-				                			aveth.2.1
+				                	aveth.2.1
 
 br_pl_1_wf_3		8000.0050b6057c85	no	adapt2
-                							aveth.3.1
+                					aveth.3.1
 
 br_pl_1_wf_4		8000.0050b609f594	no	adapt3
-				                			aveth.4.1
+				                	aveth.4.1
 
 br_pl_2_wf_1		8000.9c69d339fe0f	no	adapt5
-						                	aveth.5.1
+						       	aveth.5.1
 
 br_pl_2_wf_2		8000.9c69d339fe0c	no	adapt6
-                							aveth.6.1
+                					aveth.6.1
 
 br_pl_2_wf_3		8000.9c69d339fe73	no	adapt7
-				                			aveth.7.1
+				                	aveth.7.1
 
 br_pl_2_wf_4		8000.9c69d339fda1	no	adapt8
-                							aveth.8.1
+                					aveth.8.1
 
 Notes on using vlans instead of multiple physical USB NIC devices
 
