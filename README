@@ -4,7 +4,7 @@
 
 2) you will need to add root and yourself to the appropriate group see scripts/set_frr_groups.sh 
 
-3) to run, letce2 lxc start --scenario-delay=30
+3) to run, letce2 lxc start --scenario-delay=30 and letce2 lxc stop, or use the demo_start.sh and demo_stop.sh scripts
 
 see https://github.com/adjacentlink/letce2
 
@@ -22,14 +22,13 @@ SUBSYSTEM=="net", ACTION=="add", ATTR{address}=="9c:69:d3:39:fd:a1", KERNEL=="et
 SUBSYSTEM=="net", ACTION=="add", ATTR{address}=="00:e0:4c:68:08:f3", KERNEL=="eth*", NAME="adapt9"
 
 
-
-
 ---------------- experiment-01 --------------
 This experiment relies on IP forwarding to move traffic from end to end.
 The demo has 1 router running in an LXC container attached to 4 radios each running in its own LXC container in a different RF network.
 Let PLID be the platform ID (1 router and 4 radios).
 Let RFID be the radio network id (1-4)
-The router has 1 lan interface 10.101.PLID.1 and 4 wlan interfaces that map to a radio 10.100.RFID.PLID
+The router has 1 lan interface 10.101.RFID.1 and 4 wlan interfaces that map to a radio 10.100.RFID.PLID
+The IP address for the ethernet adapters are not used since they are used to bridge the external world to the LXC containers.
 
 
                                                                            demo-platform 
@@ -37,10 +36,10 @@ The router has 1 lan interface 10.101.PLID.1 and 4 wlan interfaces that map to a
     |   esternal host 1    | |                  |     (lxc router1)       |    (lxc emane )  |       (lxc router2)        |                  | |   external host 2   |
     |                      | |                  |                         |                  |                            |                  | |                     |
     |                      | |                  |          aveth          |                  |           aveth            |                  | |                     |
-    |                      | |       eth        |                wlan0  --|--  radio net 0 --|--  wlan0                   |       eth        | |                     |
-    |                      | |      adapt1      |     lan0       wlan1  --|--  radio net 1 --|--  wlan1      lan0         |     adapt2       | |                     |
-    |     ip  10.101.1.2 --|-|- xxx.xxx.xxx.x --|-- 10.101.1.1   wlan2  --|--  radio net 2 --|--  wlan2      10.101.2.1 --|-- xxx.xxx.xxx.x -|-|-- 10.101.2.2 ip     |
-    |     gw  10.101.1.1   | |                  |                wlan3  --|--  radio net 3 --|--  wlan3                   |                  | |   10.101.2.1 gw     |
+    |                      | |       eth        |                wlan1  --|--  radio net 1 --|--  wlan1                   |       eth        | |                     |
+    |                      | |      adapt1      |     lan0       wlan2  --|--  radio net 2 --|--  wlan2      lan0         |     adapt2       | |                     |
+    |     ip  10.101.1.2 --|-|- xxx.xxx.xxx.x --|-- 10.101.1.1   wlan3  --|--  radio net 3 --|--  wlan3      10.101.2.1 --|-- xxx.xxx.xxx.x -|-|-- 10.101.2.2 ip     |
+    |     gw  10.101.1.1   | |                  |                wlan4  --|--  radio net 4 --|--  wlan4                   |                  | |   10.101.2.1 gw     |
     |                      | |                bridge                      |                  |                          bridge               | |                     |
     |                      | |                  |                         |                  |                            |                  | |                     |
     |______________________| |__________________|_________________________|__________________|____________________________|__________________| |_____________________|
@@ -197,13 +196,13 @@ external platform 1                                     demo-platform           
 _______________________ ____________________________________________________________________________ _____________________
 |                     | |                |               (lxc emane )               |              | |                    |
 |                     | |       eth      |    aveth                        aveth    |     eth      | |                    |
-|   ip 10.101.1.1 ----|-|----  adapt1 ------- lan0  ----  radio net 0 ----  lan0 ------ adapt5 ----|-|---- 10.101.1.2 ip  |
+|   ip 10.101.1.1 ----|-|----  adapt1 ------- lan0  ----  radio net 1 ----  lan0 ------ adapt5 ----|-|---- 10.101.1.2 ip  |
 |                     | |                |                                          |              | |                    |
-|   ip 10.101.2.1 ----|-|----  adapt2 ------- lan0  ----  radio net 1 ----  lan0 ------ adapt6 ----|-|---- 10.101.2.2 ip  |
+|   ip 10.101.2.1 ----|-|----  adapt2 ------- lan0  ----  radio net 2 ----  lan0 ------ adapt6 ----|-|---- 10.101.2.2 ip  |
 |                     | |                |                                          |              | |                    |
-|   ip 10.101.3.1 ----|-|----  adapt3 ------- lan0  ----  radio net 2 ----  lan0 ------ adapt7 ----|-|---- 10.101.3.2 ip  |
+|   ip 10.101.3.1 ----|-|----  adapt3 ------- lan0  ----  radio net 3 ----  lan0 ------ adapt7 ----|-|---- 10.101.3.2 ip  |
 |                     | |                |                                          |              | |                    |
-|   ip 10.101.4.1 ----|-|----  adapt4 ------- lan0  ----  radio net 3 ----  lan0 ------ adapt8 ----|-|---- 10.101.4.2 ip  |
+|   ip 10.101.4.1 ----|-|----  adapt4 ------- lan0  ----  radio net 4 ----  lan0 ------ adapt8 ----|-|---- 10.101.4.2 ip  |
 |                     | |                |                                          |              | |                    |
 |                     | |             bridge                                     bridge            | |                    |
 |                     | |                |                                          |              | |                    |
