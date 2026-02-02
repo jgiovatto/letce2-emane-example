@@ -1,10 +1,12 @@
 # letce2-emane-example
 
-1) requires letce2 and optional mgen-analytics to be installed or sourced in via env
+1) These demo require letce2 and optional mgen-analytics to be installed or sourced in via env
 
-2) you will need to add root and yourself to the appropriate group see scripts/set_frr_groups.sh 
+2) You will need to add root and yourself to the appropriate group see scripts/set_frr_groups.sh to run frr router
 
-3) to run, letce2 lxc start --scenario-delay=30 and letce2 lxc stop, or use the demo_start.sh and demo_stop.sh scripts
+3) To build config simply type make in the experiment directory
+
+4) to run, letce2 lxc start --scenario-delay=30 and letce2 lxc stop, or use the demo_start.sh and demo_stop.sh scripts
 
 see https://github.com/adjacentlink/letce2
 
