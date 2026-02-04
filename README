@@ -3,6 +3,7 @@
 1) These demo require letce2 and optional mgen-analytics to be installed or sourced in via env
 
 2) You will need to add root and yourself to the appropriate group see scripts/set_frr_groups.sh to run frr router
+   for example    frrvty:x:989:frr,root,your_user_name
 
 3) To build config simply type make in the experiment directory
 
