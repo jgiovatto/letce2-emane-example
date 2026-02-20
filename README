@@ -25,7 +25,7 @@ SUBSYSTEM=="net", ACTION=="add", ATTR{address}=="9c:69:d3:39:fd:a1", KERNEL=="et
 SUBSYSTEM=="net", ACTION=="add", ATTR{address}=="00:e0:4c:68:08:f3", KERNEL=="eth*", NAME="adapt9"
 
 
----------------- experiment-01 --------------
+---------------- radio with router --------------
 This experiment relies on IP forwarding to move traffic from end to end.
 The demo has 1 router running in an LXC container attached to 4 radios each running in its own LXC container in a different RF network.
 Let PLID be the platform ID (1 router and 4 radios).
@@ -189,7 +189,7 @@ router-1# sh ip ospf
    Number of opaque area LSA 0. Checksum Sum 0x00000000
 
 
----------------- experiment-02 --------------
+---------------- layer2 multi channel --------------
 This experiment relies on bridging to connect external hosts as if they were on the same subnet.
 Each external node connects to a real ethernet interface which is bridged to an LXC container that runs EMANE.
 Each EMANE will read the ethernet frame from the aveth inteface and send it OTA to the other EMANE node(s) which will forward the frame out to the external host.
