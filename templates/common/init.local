@@ -143,4 +143,7 @@ then
 fi
 
 
-
+if [ -f static_routes.txt ]
+then
+   set_static_routes "static_routes.txt"
+fi

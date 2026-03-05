@@ -246,7 +246,25 @@ link_external_interfaces()
 
   while IFS=":" read -r br_name if_name; do
     # Process the line here
-    echo "add external interface: $if_name to bridge $br_name"
+    # set the NIC ip address so 0.0.0.0, if the container ip address
+    # matches then the kernel will handle the ARP
+    echo "add external interface: $if_name to bridge $br_name and set ip address to 0.0.0.0"
+    sudo ifconfig $if_name promisc
+    sudo ifconfig $if_name 0.0.0.0
     brctl addif $br_name $if_name
+  done < "$config"
+}
+
+
+set_static_routes()
+{
+  local config=$1
+
+  echo "static routes $config"
+
+  while IFS=":" read -r rt_name rt_gw if_name; do
+    # Process the line here
+    echo "set static route : $rt_name gw $rt_gw via $if_name"
+    route add -net $rt_name gw $rt_gw dev $if_name
   done < "$config"
 }

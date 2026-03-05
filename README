@@ -25,6 +25,15 @@ SUBSYSTEM=="net", ACTION=="add", ATTR{address}=="9c:69:d3:39:fd:a1", KERNEL=="et
 SUBSYSTEM=="net", ACTION=="add", ATTR{address}=="00:e0:4c:68:08:f3", KERNEL=="eth*", NAME="adapt9"
 
 
+----------- simple ipforwarding radio -----------
+This experiment relies oon ipforwarding within the radio container between lan0 and emane0.
+The lan0 interface is bridged to the real external NIC which has its address set to 0.0.0.0.
+The attached device should set the IP address of the container lan0 IP address. This will allow
+the container to respond to ARP's from the attached device. Since the radio system is a simple RF Pipe
+there is no routing protocol running OTA. For this simple test static routes were added to map each
+cleitn device to a radio.
+
+
 ---------------- radio with router --------------
 This experiment relies on IP forwarding to move traffic from end to end.
 The demo has 1 router running in an LXC container attached to 4 radios each running in its own LXC container in a different RF network.
