@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE pcr SYSTEM "file:///usr/share/emane/dtd/rfpipepcr.dtd">
 <pcr>
-    <table pktsize="512">
+    <table pktsize="0">
         <row sinr="0.0" 	por="0"/>
         <row sinr="0.5"  	por="2.5"/>
         <row sinr="1.0" 	por="5"/>

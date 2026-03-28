@@ -1,6 +1,8 @@
 #!/bin/bash
 
-letce2 lxc start  --scenario-delay=10
+. ./host/demo.env
+
+letce2 lxc start  -e ./host/demo.env  --scenario-delay=10
 
 sleep 10
 
