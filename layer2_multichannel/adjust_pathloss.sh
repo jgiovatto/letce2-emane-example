@@ -2,7 +2,7 @@
   
 DEV=letce0
 
-if [ "$#" -ne 1 ]; then
+if [ "$#" -ne 2 ]; then
     echo "Error: Incorrect number of arguments. 2 required" >&2
     echo "Usage: $0 lanId <1, 2, 3 or 4> pathloss" >&2
     exit 1
